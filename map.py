@@ -15,13 +15,21 @@ class Map:
   def map(self, address_list):
     erreur = []
     for address in address_list:
-      try:
-        folium.Marker(
+      folium.Marker(
           list(geocoding(address).values()), popup=address, icon=folium.features.CustomIcon(
             "https://www.promenadesdebretigny.fr/wp-content/uploads/2019/06/basic-fit.png",
             icon_size=(50*2.5, 35*2.5)
             )
         ).add_to(self.carte)
-      except:
-        erreur.append(f"Erreur sur {address}")
+      # try:
+      #   st.write(address)
+      #   folium.Marker(
+      #     list(geocoding(address).values()), popup=address, icon=folium.features.CustomIcon(
+      #       "https://www.promenadesdebretigny.fr/wp-content/uploads/2019/06/basic-fit.png",
+      #       icon_size=(50*2.5, 35*2.5)
+      #       )
+      #   ).add_to(self.carte)
+      # except:
+      #   st.write(address)
+      #   erreur.append(f"Erreur sur {address}")
     return self.carte,erreur

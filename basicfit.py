@@ -159,13 +159,10 @@ mapper=Map()
 result = mapper.map(df["club"].unique().tolist())
 
 # Affichage des basic fit non placés (si necessaire)
-if result[1]:
-    for erreur in result[1]:
-        st.write(erreur)
+#if result[1]:
+#    for erreur in result[1]:
+#        st.write(erreur)
 
 # Affichage de la carte
 markdown("Points de tous les basic-fit visités",size="20px",center=True)
 st_folium(result[0], returned_objects=[""], width=800, height=600)
-
-# Affichage des séances les plus éloignées en distances
-st.write(geocoding("Bagneux Avenue Aristide Briand"))
