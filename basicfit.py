@@ -1,4 +1,5 @@
 import json
+import config
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -7,75 +8,25 @@ from streamlit_folium import st_folium
 from utils import (markdown, geocoding)
 from map import Map
 
-# """
-# Configuration de la page princiaple initiale
-# """
-#Paramètres de la page
+# Configuration de la page
 st.set_page_config(
-    page_title="Basic fit Dashboard",
+    page_title="Basic fit Dashboard 💪",
     layout="wide",
     initial_sidebar_state="expanded",
     page_icon="https://companieslogo.com/img/orig/BFIT.AS-f0360106.png?t=1664515365",
     menu_items={
     'Get Help': 'mailto:tanguy.minot@laposte.net',
-    'About': "Dashboard by Tanguy Minot!"
+    'About': "Dashboard by Tanguy Minot! 🧑‍💻"
     }
 )
 
-#Fond orange
-st.markdown(
-    """
-<style>
-[data-testid="stAppViewContainer"]{
-    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaQLH29dRw9kQpyvPUJJRfHy6PGk-G-ZqwVDWKjz2HeFAJmDnaBsvq1TjvPal01rTvmUs&usqp=CAU");
-    background-size: cover;
-}
-    """,
-    unsafe_allow_html=True,
-)
-
-#Fond avec des haltères
-st.markdown(
-    """
-<style>
-[data-testid="stSidebar"]{
-    background-image: url("https://i.pinimg.com/originals/de/e6/da/dee6da39b926de9739c11409920a353b.jpg");
-    background-size: 165%;
-    background-position: 48% 52%;
-    background-attachment: local;
-    background-color: #FD7605;
-}
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown(
-    """
-<style>
-[data-testid="stHeader"]{
-    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaQLH29dRw9kQpyvPUJJRfHy6PGk-G-ZqwVDWKjz2HeFAJmDnaBsvq1TjvPal01rTvmUs&usqp=CAU");
-    background-size: cover;
-}
-    """,
-    unsafe_allow_html=True,
-)
-
-#Fond du message dans la sidebar
-st.markdown(
-    """
-<style>
-[class="stAlert"]{
-    background-color: #FFFFFF;
-}
-    """,
-    unsafe_allow_html=True,
-)
+# Configuration avec des styles CSS pour les différents background
+st.markdown('<style>{}</style>'.format(config.main_page_background), unsafe_allow_html=True)
+st.markdown('<style>{}</style>'.format(config.sidebar_background), unsafe_allow_html=True)
+st.markdown('<style>{}</style>'.format(config.sidebar_message_success), unsafe_allow_html=True)
 
 #Affichage d'un titre
-st.title("Basic fit Dashboard")
-
-# """
-# Configuration de la side page
-# """
+st.title("🔍 Basic fit Dashboard \n")
 
 #Initialisation de la sidebar
 file = st.sidebar.file_uploader("**Importer votre fichier Basic fit :**")
@@ -91,26 +42,27 @@ if file:
             dow=lambda x: pd.to_datetime(x["date"]).dt.day_name()
         ).drop(["time"], axis=1).astype({"date": "datetime64"}).set_index("date")
 
-        st.sidebar.success("Fichier correctement importé")
+        st.sidebar.success("✅ Fichier correctement importé")
     except:
-        st.error("Mauvais fichier importé. Veuillez importer le fichier json de l'application basic-fit/mes données.")
-        st.sidebar.error("Erreur dans l'importation du fichier !")
+        st.error("❌ Mauvais fichier importé. Veuillez importer le fichier json de l'application basic-fit/mes données.")
+        st.sidebar.error("❌ Erreur dans l'importation du fichier !")
         st.stop()
 else: 
-    st.info("Importer votre fichier BasicFit dans la barre latéral à gauche.")
+    st.info("💡 Importer votre fichier BasicFit dans la barre latéral à gauche.")
     st.stop()
 
 # """
 # Création des différents dash
 # """
-#KPI's sur les entraînements
+
+# KPI's sur les entraînements
 col1, col2, col3 = st.columns(3)
-col1.metric(label="Nombre d'entraînements", value=df.shape[0])
+col1.metric(label="Nombre d'entraînements ", value=df.shape[0])
 col2.metric(label="Nombre de basic-fit différents", value=len(df["club"].unique()))
 close_days = (pd.to_datetime("2021-06-09") - pd.to_datetime("2020-10-29")).days
 col3.metric(label="Nombre d'entraînements par semaine", value=round(7/(((df.index[0] - df.index[-1]).days-close_days)/(df.shape[0]+10)), 2))
 
-#Top des basic-fit les plus visités
+# Top des basic-fit les plus visités
 st.write("\n")
 st.plotly_chart(
     px.bar(
@@ -129,7 +81,7 @@ st.plotly_chart(
     use_container_width=True
 )
 
-#Entraînements les plus tardif et les plus tôt.
+# Entraînements les plus tardif et les plus tôt.
 col1, col2 = st.columns(2)
 col1.write("**Entrainements les plus tôts :**")
 col1.write(
@@ -156,7 +108,7 @@ col2.write(
     unsafe_allow_html=True
 )
 
-#Entraînements par jour de la semaine
+# Entraînements par jour de la semaine
 st.plotly_chart(
     px.bar(df.groupby("dow").count().rename(
         columns={"club" : "nb_training"}
@@ -173,7 +125,7 @@ st.plotly_chart(
 ),use_container_width=True
 )
 
-#Histogramme du nbr entraînement par heure la semaine et le week end
+# Histogramme du nbr entraînement par heure la semaine et le week end
 st.plotly_chart(
     px.histogram(
         df.assign(we=[i*"Week-end"+(not i)*"Semaine" for i in list(df["dow"].isin(['Saturday', 'Sunday']))]).set_index(
@@ -202,15 +154,18 @@ st.plotly_chart(
     use_container_width=True
 )
 
-#Affichage de la carte de tous les basic fit visités
+# Affichage de la carte de tous les basic fit visités
 mapper=Map()
 result = mapper.map(df["club"].unique().tolist())
 
-#Affichage des basic fit non placés (si necessaire)
+# Affichage des basic fit non placés (si necessaire)
 if result[1]:
     for erreur in result[1]:
         st.write(erreur)
 
-#Affichage de la carte
+# Affichage de la carte
 markdown("Points de tous les basic-fit visités",size="20px",center=True)
-st_folium(result[0], returned_objects=[""]) #, width=800, height=600)
+st_folium(result[0], returned_objects=[""], width=800, height=600)
+
+# Affichage des séances les plus éloignées en distances
+st.write(geocoding("Bagneux Avenue Aristide Briand"))

@@ -6,8 +6,8 @@ class Map:
   def __init__(self):
     fond = r'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}' #https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'
     self.carte = folium.Map(
-      location=[46.2276, 2.2137],
-      zoom_start=7, 
+      location=[47.2276, 2.2137],
+      zoom_start=6, 
       tiles=fond, 
       attr='Custom tiles'
       )
