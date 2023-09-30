@@ -1,1 +1,3 @@
 api_access.py
+data/**
+__pycache__/**
