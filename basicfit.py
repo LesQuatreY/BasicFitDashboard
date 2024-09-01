@@ -61,6 +61,9 @@ col1.metric(label="Nombre d'entraînements ", value=df.shape[0])
 col2.metric(label="Nombre de basic-fit différents", value=len(df["club"].unique()))
 close_days = (pd.to_datetime("2021-06-09") - pd.to_datetime("2020-10-29")).days
 col3.metric(label="Nombre d'entraînements par semaine", value=round(7/(((df.index[0] - df.index[-1]).days-close_days)/(df.shape[0]+10)), 2))
+col2.metric(label="Nombre d'entraînements en 2022", value=(df.index.year == 2022).sum())
+col2.metric(label="Nombre d'entraînements en 2023", value=(df.index.year == 2023).sum())
+col2.metric(label="Nombre d'entraînements en 2024", value=(df.index.year == 2024).sum())
 
 # Top des basic-fit les plus visités
 st.write("\n")
